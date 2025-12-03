@@ -53,5 +53,9 @@
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "resolutions": {
+    "@types/express": "4.17.21",
+    "@types/express-serve-static-core": "4.17.41"
   }
 }

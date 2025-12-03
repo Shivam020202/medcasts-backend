@@ -12,7 +12,7 @@ if (!fs.existsSync(uploadDir)) {
 
 // Storage configuration
 const storage = multer.diskStorage({
-  destination: (req: Request, file: Express.Multer.File, cb) => {
+  destination: (req, file, cb) => {
     const folder = req.body.folder || "general";
     const dest = path.join(uploadDir, folder);
 
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
     cb(null, dest);
   },
-  filename: (req: Request, file: Express.Multer.File, cb) => {
+  filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(
       null,
@@ -32,7 +32,7 @@ const storage = multer.diskStorage({
 });
 
 // File filter
-const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
+const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
   const allowedTypes = /jpeg|jpg|png|gif|webp/;
   const extname = allowedTypes.test(
     path.extname(file.originalname).toLowerCase()
