@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedCast CMS - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Noto Sans", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+        }
+
+        .nav-item {
+            color: white;
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #60a5fa;
+            color: springgreen;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            border-top-color: #6366f1;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="flex h-screen bg-gray-200">
+
+        <aside class="z-20 hidden w-64 overflow-y-auto bg-gray-800 md:block flex-shrink-0">
+            <div class=" bg-white">
+                <!-- <h1 class="text-2xl font-bold text-white">MedCast CMS</h1> -->
+                <img src="./logo.png" alt="" class="h-16 mx-auto">
+            </div>
+            <nav class="mt-0">
+                <a href="#" onclick="showSection(event, 'overview')"
+                    class="nav-item active block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Overview</a><a
+                    href="#" onclick="showSection(event, 'hospitals')"
+                    class="nav-item block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Hospitals</a><a
+                    href="#" onclick="showSection(event, 'doctors')"
+                    class="nav-item block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Doctors</a><a
+                    href="#" onclick="showSection(event, 'treatments')"
+                    class="nav-item block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Treatments</a><a
+                    href="#" onclick="showSection(event, 'specialties')"
+                    class="nav-item block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Specialties</a><a
+                    href="#" onclick="showSection(event, 'testimonials')"
+                    class="nav-item block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Testimonials</a><a
+                    href="#" onclick="logout()"
+                    class="nav-item block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 mt-8">Logout</a>
+            </nav>
+        </aside>
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="flex justify-between items-center py-4 px-6 bg-white border-b-4 border-indigo-600">
+                <div class="flex items-center"><button class="text-gray-500 focus:outline-none md:hidden"><i
+                            class="fas fa-bars"></i></button>
+                    <h2 id="pageTitle" class="text-2xl font-semibold text-gray-800 ml-4">Dashboard Overview</h2>
+                </div>
+                <div class="flex items-center gap-4"><span id="currentTime" class="text-gray-600 font-medium"></span>
+                    <div class="relative"><button class="flex items-center text-gray-500 focus:outline-none"><span
+                                id="userRole" class="mr-2 font-medium">Admin</span>
+                            <div
+                                class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+                                A</div>
+                        </button></div>
+                </div>
+            </header>
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6">
+
+                <div id="overviewSection"
+                    class="content-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3"><i
+                                    class="fas fa-hospital text-white text-2xl"></i></div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">Total Hospitals</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="totalHospitals">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-green-500 rounded-md p-3"><i
+                                    class="fas fa-user-md text-white text-2xl"></i></div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">Total Doctors</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="totalDoctors">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3"><i
+                                    class="fas fa-procedures text-white text-2xl"></i></div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">Total Treatments</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="totalTreatments">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-red-500 rounded-md p-3"><i
+                                    class="fas fa-comments text-white text-2xl"></i></div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">Pending Reviews</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="pendingTestimonials">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="hospitalsSection" class="content-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-xl font-semibold">Hospitals</h2><button onclick="openHospitalModal()"
+                                    class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"><i
+                                        class="fas fa-plus mr-2"></i>Add Hospital </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div id="hospitalsList">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="doctorsSection" class="content-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-xl font-semibold">Doctors Management</h2><button
+                                    onclick="openDoctorModal()"
+                                    class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"><i
+                                        class="fas fa-plus mr-2"></i>Add Doctor </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div id="doctorsList">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="treatmentsSection" class="content-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-xl font-semibold">Treatments Management</h2><button
+                                    onclick="openTreatmentModal()"
+                                    class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"><i
+                                        class="fas fa-plus mr-2"></i>Add Treatment </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div id="treatmentsList">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="specialtiesSection" class="content-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-xl font-semibold">Specialties Management</h2>
+                                <button onclick="openSpecialtyModal()"
+                                    class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"><i
+                                        class="fas fa-plus mr-2"></i>Add Specialty </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div id="specialtiesList">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="testimonialsSection" class="content-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-xl font-semibold">Testimonials Management
+                                </h2><button onclick="openTestimonialModal()"
+                                    class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"><i
+                                        class="fas fa-plus mr-2"></i>Add Testimonial
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div id="testimonialsList">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <div id="hospitalModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-10 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white mb-10">
+            <div class="mt-3">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 text-center" id="hospitalModalTitle">Add
+                    Hospital </h3>
+                <form id="hospitalForm" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4"><input type="hidden"
+                        id="hospitalId">
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalName">Name</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalName" type="text" required></div>
+                    <div class="col-span-2"><label
+                            class="block text-gray-700 text-sm font-bold mb-2">Specialties</label>
+                        <div id="hospitalSpecialtiesCheckboxes"
+                            class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded p-3">
+                            <div class="text-center py-2 text-gray-500">Loading specialties...</div>
+                        </div>
+                    </div>
+                    <div class="col-span-2"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalDescription">Description</label><textarea
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalDescription" rows="3"></textarea></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalLocation">Location
+                            (Area)</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalLocation" type="text" required></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalAddress">Full
+                            Address</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalAddress" type="text"></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalCity">City</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalCity" type="text" required></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalState">State</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalState" type="text" required></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalCountry">Country</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalCountry" type="text" value="India"></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalPhone">Phone</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalPhone" type="text"></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalEmail">Email</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalEmail" type="email"></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalWebsite">Website</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalWebsite" type="text"></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalRating">Rating
+                            (0-5)</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalRating" type="number" step="0.1" min="0" max="5"></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalAccreditation">Accreditation</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalAccreditation" type="text"></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalEstablishedYear">Established Year</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalEstablishedYear" type="number"></div>
+                    <div class="col-span-2 md:col-span-1"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalBedCapacity">Bed
+                            Capacity</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalBedCapacity" type="number"></div>
+                    <div class="col-span-2"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="hospitalImage">Image</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="hospitalImage" type="file" accept="image/*"></div>
+                    <div class="col-span-2 flex items-center justify-between mt-6"><button type="button"
+                            onclick="closeModal('hospitalModal')"
+                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cancel</button><button
+                            type="submit"
+                            class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Modal -->
+    <div id="doctorModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="doctorModalTitle">Add Doctor</h3>
+                    <button onclick="closeDoctorModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="doctorForm" onsubmit="saveDoctorForm(event)">
+                    <input type="hidden" id="doctorId">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Doctor Name *</label>
+                            <input type="text" id="doctorName" required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Specialization *</label>
+                            <input type="text" id="doctorSpecialization" required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Experience *</label>
+                            <input type="text" id="doctorExperience" required placeholder="e.g., 15+ years"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Hospital *</label>
+                            <select id="doctorHospitalId" required
+                                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                <option value="">Select Hospital</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Specialty *</label>
+                            <select id="doctorSpecialtyId" required
+                                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                <option value="">Select Specialty</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Rating</label>
+                            <input type="number" id="doctorRating" step="0.1" min="0" max="5" placeholder="4.5"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Patients Treated</label>
+                            <input type="text" id="doctorPatientsTreated" placeholder="e.g., 10000+"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Reviews</label>
+                            <input type="text" id="doctorReviews" placeholder="e.g., 500+"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                            <input type="email" id="doctorEmail"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Phone</label>
+                            <input type="tel" id="doctorPhone"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Consultation Fee</label>
+                            <input type="number" id="doctorConsultationFee" step="0.01" min="0"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Image URL</label>
+                            <input type="text" id="doctorImage" oninput="previewDoctorImage()"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <div id="doctorImagePreview" class="mt-2 hidden">
+                                <img id="doctorImagePreviewImg" src="" alt="Doctor Preview"
+                                    class="w-24 h-24 rounded-full object-cover border-2 border-gray-300">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Qualifications</label>
+                        <textarea id="doctorQualifications" rows="2"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Expertise <span
+                                class="text-gray-500 font-normal">(comma-separated)</span></label>
+                        <textarea id="doctorExpertise" rows="2"
+                            placeholder="e.g. Cardiac Surgery, Heart Transplant, Bypass Surgery"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Bio</label>
+                        <textarea id="doctorBio" rows="3"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Available Days <span
+                                class="text-gray-500 font-normal">(comma-separated)</span></label>
+                        <input type="text" id="doctorAvailableDays"
+                            placeholder="e.g. Monday, Tuesday, Wednesday, Thursday, Friday"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="doctorIsActive" checked class="mr-2">
+                            <span class="text-gray-700 text-sm font-bold">Active</span>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2">
+                        <button type="button" onclick="closeDoctorModal()"
+                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Treatment Modal -->
+    <div id="treatmentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="treatmentModalTitle">Add Treatment</h3>
+                    <button onclick="closeTreatmentModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="treatmentForm" onsubmit="saveTreatmentForm(event)">
+                    <input type="hidden" id="treatmentId">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Treatment Name *</label>
+                            <input type="text" id="treatmentName" required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Cost *</label>
+                            <input type="text" id="treatmentCost" required placeholder="e.g., $5000-$10000"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Hospital *</label>
+                            <select id="treatmentHospitalId" required
+                                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                <option value="">Select Hospital</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Specialty *</label>
+                            <select id="treatmentSpecialtyId" required
+                                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                <option value="">Select Specialty</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Duration</label>
+                            <input type="text" id="treatmentDuration" placeholder="e.g., 2-3 hours"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Hospital Stay</label>
+                            <input type="text" id="treatmentStay" placeholder="e.g., 3-5 days"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Success Rate (%)</label>
+                            <input type="number" id="treatmentSuccessRate" step="0.1" min="0" max="100"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Procedure Type</label>
+                            <input type="text" id="treatmentProcedureType" placeholder="e.g., Surgical"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                        <textarea id="treatmentDescription" rows="4"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="treatmentIsActive" checked class="mr-2">
+                            <span class="text-gray-700 text-sm font-bold">Active</span>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2">
+                        <button type="button" onclick="closeTreatmentModal()"
+                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="specialtyModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 text-center" id="specialtyModalTitle">Add
+                    Specialty</h3>
+                <form id="specialtyForm" class="mt-4"><input type="hidden" id="specialtyId">
+                    <div class="mb-4"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="specialtyName">Name</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="specialtyName" type="text" required></div>
+                    <div class="mb-4"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="specialtyDescription">Description</label><textarea
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="specialtyDescription" rows="3"></textarea></div>
+                    <div class="mb-4"><label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="specialtyImage">Image</label><input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="specialtyImage" type="file" accept="image/*" onchange="previewSpecialtyImage(event)">
+                        <div id="specialtyImagePreview" class="mt-2"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-6"><button type="button"
+                            onclick="closeModal('specialtyModal')"
+                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cancel</button><button
+                            type="submit"
+                            class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="testimonialModal"
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-10 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white mb-10">
+            <div class="mt-3">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 text-center" id="testimonialModalTitle">Add
+                    Testimonial</h3>
+                <form id="testimonialForm" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="hidden" id="testimonialId">
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialPatientName">Patient
+                            Name</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialPatientName" type="text" required>
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialAge">Age</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialAge" type="number">
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="testimonialCountry">Country</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialCountry" type="text">
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="testimonialTreatment">Treatment</label>
+                        <select
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialTreatment" required>
+                            <option value="">Select Treatment</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="testimonialHospital">Hospital</label>
+                        <select
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialHospital" required>
+                            <option value="">Select Hospital</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialDoctor">Doctor</label>
+                        <select
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialDoctor">
+                            <option value="">Select Doctor</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialRating">Rating
+                            (0-5)</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialRating" type="number" min="0" max="5" required>
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialDate">Date</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialDate" type="date">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialStory">Story</label>
+                        <textarea
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialStory" rows="4" required></textarea>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialImage">Image</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="testimonialImage" type="file" accept="image/*">
+                    </div>
+                    <div class="col-span-2 hidden" id="testimonialImagePreviewContainer">
+                        <p class="text-gray-600 text-sm font-medium">Selected Image Preview</p>
+                        <img id="testimonialImagePreview" src="" alt="Selected testimonial image preview"
+                            class="mt-2 h-32 w-32 rounded-lg object-cover border border-gray-200">
+                    </div>
+                    <div class="col-span-2 flex items-center justify-between mt-6">
+                        <button type="button" onclick="closeModal('testimonialModal')"
+                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cancel</button>
+                        <button type="submit"
+                            class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.origin + '/api';
+        let authToken = localStorage.getItem('authToken');
+        let currentUser = null;
+        let existingTestimonialImageUrl = '';
+
+        const testimonialImageInput = document.getElementById('testimonialImage');
+        const testimonialImagePreviewContainer = document.getElementById('testimonialImagePreviewContainer');
+        const testimonialImagePreview = document.getElementById('testimonialImagePreview');
+
+        // Helper function to get full image URL
+        function getImageUrl(imagePath) {
+            if (!imagePath) return '';
+            // If it's already a full URL, return as is
+            if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+                return imagePath;
+            }
+            // If it's a relative path, prepend server origin
+            if (imagePath.startsWith('/')) {
+                return window.location.origin + imagePath;
+            }
+            // Otherwise prepend server origin with /
+            return window.location.origin + '/' + imagePath;
+        }
+
+        function showTestimonialImagePreview(src = '') {
+            if (!testimonialImagePreview || !testimonialImagePreviewContainer) return;
+            if (src) {
+                testimonialImagePreview.src = src;
+                testimonialImagePreviewContainer.classList.remove('hidden');
+            } else {
+                testimonialImagePreview.src = '';
+                testimonialImagePreviewContainer.classList.add('hidden');
+            }
+        }
+
+        function handleTestimonialImageChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const result = e.target?.result;
+                    if (typeof result === 'string') {
+                        showTestimonialImagePreview(result);
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                showTestimonialImagePreview(existingTestimonialImageUrl);
+            }
+        }
+
+        if (testimonialImageInput) {
+            testimonialImageInput.addEventListener('change', handleTestimonialImageChange);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            const timeEl = document.getElementById('currentTime');
+            if (timeEl) timeEl.textContent = timeStr;
+        }
+        setInterval(updateTime, 1000);
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            window.location.href = '/admin/login.html';
+        }
+
+        function showSection(event, sectionId) {
+            if (event) event.preventDefault();
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('bg-gray-700', 'active'));
+            const section = document.getElementById(sectionId + 'Section');
+            if (section) section.classList.remove('hidden');
+            if (event && event.currentTarget) event.currentTarget.classList.add('bg-gray-700', 'active');
+            const titles = {
+                'overview': 'Dashboard Overview',
+                'hospitals': 'Hospitals Management',
+                'doctors': 'Doctors Management',
+                'treatments': 'Treatments Management',
+                'specialties': 'Specialties Management',
+                'testimonials': 'Testimonials Management'
+            };
+            const titleEl = document.getElementById('pageTitle');
+            if (titleEl) titleEl.textContent = titles[sectionId] || 'Dashboard';
+            if (sectionId === 'overview') loadOverviewData();
+            else if (sectionId === 'hospitals') loadHospitals();
+            else if (sectionId === 'doctors') loadDoctors();
+            else if (sectionId === 'treatments') loadTreatments();
+            else if (sectionId === 'specialties') loadSpecialties();
+            else if (sectionId === 'testimonials') loadTestimonials();
+        }
+
+        if (!authToken) {
+            window.location.href = '/admin/login.html';
+        } else {
+            validateTokenAndLoadDashboard();
+        }
+
+        async function validateTokenAndLoadDashboard() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.data;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    const userRoleEl = document.getElementById('userRole');
+                    if (userRoleEl) userRoleEl.textContent = currentUser.role === 'admin' ? 'Admin' : 'Manager';
+                    loadOverviewData();
+                    updateTime();
+                } else {
+                    logout();
+                }
+            } catch (error) {
+                console.error('Auth validation error:', error);
+                logout();
+            }
+        }
+
+        async function loadOverviewData() {
+            try {
+                const headers = { 'Authorization': `Bearer ${authToken}` };
+                const [hospitals, doctors, treatments, testimonials] = await Promise.all([
+                    fetch(`${API_BASE_URL}/hospitals`, { headers }).then(r => r.json()),
+                    fetch(`${API_BASE_URL}/doctors`, { headers }).then(r => r.json()),
+                    fetch(`${API_BASE_URL}/treatments`, { headers }).then(r => r.json()),
+                    fetch(`${API_BASE_URL}/testimonials?isApproved=false`, { headers }).then(r => r.json())
+                ]);
+                document.getElementById('totalHospitals').textContent = hospitals.data?.pagination?.total || 0;
+                document.getElementById('totalDoctors').textContent = doctors.data?.pagination?.total || 0;
+                document.getElementById('totalTreatments').textContent = treatments.data?.pagination?.total || 0;
+                document.getElementById('pendingTestimonials').textContent = testimonials.data?.pagination?.total || 0;
+            } catch (error) {
+                console.error('Error loading overview:', error);
+            }
+        }
+
+        // Hospitals
+        async function loadHospitals() {
+            const listDiv = document.getElementById('hospitalsList');
+            listDiv.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto mb-4"></div><p class="text-gray-500">Loading hospitals...</p></div>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/hospitals`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success && data.data.hospitals.length > 0) {
+                    listDiv.innerHTML = data.data.hospitals.map(h => `
+                        <div class="border-b border-gray-200 py-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-lg">${h.name}</h3>
+                                    <p class="text-sm text-gray-600">${h.city}, ${h.state}</p>
+                                    <div class="mt-1">
+                                        <code class="text-xs bg-gray-100 px-2 py-1 rounded text-blue-600">slug: ${h.slug}</code>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="viewHospitalPages(${h.id}, '${h.slug}')" class="text-green-600 hover:bg-green-50 px-2 py-1 rounded" title="View Pages">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </button>
+                                    <button onclick="openHospitalModal('${h.id}', '${h.name}', '${h.location}', '${h.city}', '${h.state}', '${h.country || 'India'}', '${h.specialty || ''}', '${h.description || ''}', '${h.address || ''}', '${h.phone || ''}', '${h.email || ''}', '${h.website || ''}', '${h.rating || ''}', '${h.accreditation || ''}', '${h.establishedYear || ''}', '${h.bedCapacity || ''}')" class="text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteHospital(${h.id})" class="text-red-600 hover:bg-red-50 px-2 py-1 rounded">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="hospital-specialties-${h.id}" class="mt-2 text-sm text-gray-500">
+                                <span class="loading inline-block w-3 h-3 mr-1"></span> Loading specialties...
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Load specialties for each hospital
+                    data.data.hospitals.forEach(h => {
+                        loadHospitalSpecialtiesInline(h.id, h.slug);
+                    });
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-gray-500 py-4">No hospitals found.</p>';
+                }
+            } catch (e) {
+                listDiv.innerHTML = '<p class="text-center text-red-500 py-4">Error loading hospitals.</p>';
+            }
+        }
+
+        async function openHospitalModal(id = '', name = '', location = '', city = '', state = '', country = 'India', specialty = '', description = '', address = '', phone = '', email = '', website = '', rating = '', accreditation = '', establishedYear = '', bedCapacity = '') {
+            document.getElementById('hospitalId').value = id;
+            document.getElementById('hospitalName').value = name;
+            document.getElementById('hospitalLocation').value = location;
+            document.getElementById('hospitalCity').value = city;
+            document.getElementById('hospitalState').value = state;
+            document.getElementById('hospitalCountry').value = country;
+            document.getElementById('hospitalDescription').value = description;
+            document.getElementById('hospitalAddress').value = address;
+            document.getElementById('hospitalPhone').value = phone;
+            document.getElementById('hospitalEmail').value = email;
+            document.getElementById('hospitalWebsite').value = website;
+            document.getElementById('hospitalRating').value = rating;
+            document.getElementById('hospitalAccreditation').value = accreditation;
+            document.getElementById('hospitalEstablishedYear').value = establishedYear;
+            document.getElementById('hospitalBedCapacity').value = bedCapacity;
+            document.getElementById('hospitalImage').value = '';
+            document.getElementById('hospitalModalTitle').textContent = id ? 'Edit Hospital' : 'Add Hospital';
+
+            // Load specialties and populate checkboxes
+            await loadHospitalSpecialties(id);
+
+            document.getElementById('hospitalModal').classList.remove('hidden');
+        }
+
+        document.getElementById('hospitalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('hospitalId').value;
+            const formData = new FormData();
+            formData.append('name', document.getElementById('hospitalName').value);
+            formData.append('location', document.getElementById('hospitalLocation').value);
+            formData.append('city', document.getElementById('hospitalCity').value);
+            formData.append('state', document.getElementById('hospitalState').value);
+            formData.append('country', document.getElementById('hospitalCountry').value);
+            formData.append('specialty', 'General'); // Legacy field, set default
+            formData.append('description', document.getElementById('hospitalDescription').value);
+            formData.append('address', document.getElementById('hospitalAddress').value);
+            formData.append('phone', document.getElementById('hospitalPhone').value);
+            formData.append('email', document.getElementById('hospitalEmail').value);
+            formData.append('website', document.getElementById('hospitalWebsite').value);
+            formData.append('rating', document.getElementById('hospitalRating').value);
+            formData.append('accreditation', document.getElementById('hospitalAccreditation').value);
+            formData.append('establishedYear', document.getElementById('hospitalEstablishedYear').value);
+            formData.append('bedCapacity', document.getElementById('hospitalBedCapacity').value);
+            const imageFile = document.getElementById('hospitalImage').files[0];
+            if (imageFile) formData.append('image', imageFile);
+
+            // Get selected specialty IDs
+            const specialtyIds = Array.from(document.querySelectorAll('#hospitalSpecialtiesCheckboxes input[type="checkbox"]:checked')).map(cb => parseInt(cb.value));
+
+            const url = id ? `${API_BASE_URL}/hospitals/${id}` : `${API_BASE_URL}/hospitals`;
+            const method = id ? 'PUT' : 'POST';
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Authorization': `Bearer ${authToken}` },
+                    body: formData
+                });
+                if (response.ok) {
+                    const hospitalData = await response.json();
+                    const hospitalId = id || hospitalData.data.id;
+
+                    // Update specialties if any selected
+                    if (specialtyIds.length > 0) {
+                        await fetch(`${API_BASE_URL}/hospitals/${hospitalId}/specialties`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ specialtyIds })
+                        });
+                    }
+
+                    closeModal('hospitalModal');
+                    loadHospitals();
+                } else {
+                    const data = await response.json();
+                    alert('Error saving hospital: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error saving hospital');
+            }
+        });
+
+        async function deleteHospital(id) {
+            if (confirm('Delete this hospital?')) {
+                try {
+                    await fetch(`${API_BASE_URL}/hospitals/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    loadHospitals();
+                } catch (error) {
+                    console.error(error);
+                    alert('Error deleting hospital');
+                }
+            }
+        }
+
+        // Helper functions
+        async function loadHospitalSelectOptions(selectId, selectedId = null) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = '<option value="">Loading...</option>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/hospitals?limit=100`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success && data.data && data.data.hospitals) {
+                    select.innerHTML = '<option value="">Select Hospital</option>' + data.data.hospitals.map(h => `<option value="${h.id}" ${h.id == selectedId ? 'selected' : ''}>${h.name}${h.city ? ' - ' + h.city : ''}</option>`).join('');
+                }
+            } catch (e) {
+                console.error('Error loading hospitals:', e);
+                select.innerHTML = '<option value="">Error loading hospitals</option>';
+            }
+        }
+
+        async function loadSpecialtyOptions(selectId, selectedId = null) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = '<option value="">Loading...</option>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/specialties`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    select.innerHTML = '<option value="">Select Specialty</option>' + data.data.specialties.map(s => `<option value="${s.id}" ${s.id == selectedId ? 'selected' : ''}>${s.name}</option>`).join('');
+                }
+            } catch (e) {
+                select.innerHTML = '<option value="">Error loading specialties</option>';
+            }
+        }
+
+        async function loadHospitalSpecialtiesInline(hospitalId, hospitalSlug) {
+            const container = document.getElementById(`hospital-specialties-${hospitalId}`);
+            if (!container) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/hospitals/${hospitalId}/specialties`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+
+                if (data.success && data.data.length > 0) {
+                    const specialtyBadges = data.data.map(s => `
+                        <a href="http://localhost:5173/hospital/${hospitalSlug}/${s.slug}" 
+                           target="_blank"
+                           class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-2 mb-1 hover:bg-blue-200">
+                            ${s.name}
+                            <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                        </a>
+                    `).join('');
+                    container.innerHTML = `<div class="flex flex-wrap items-center"><span class="text-gray-600 mr-2">Specialties:</span>${specialtyBadges}</div>`;
+                } else {
+                    container.innerHTML = '<span class="text-gray-400">No specialties assigned</span>';
+                }
+            } catch (e) {
+                container.innerHTML = '<span class="text-red-500">Error loading specialties</span>';
+            }
+        }
+
+        async function viewHospitalPages(hospitalId, hospitalSlug) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/hospitals/${hospitalId}/specialties`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+
+                if (data.success && data.data.length > 0) {
+                    const urls = data.data.map(s => `http://localhost:5173/hospital/${hospitalSlug}/${s.slug}`);
+
+                    // Create modal to show all pages
+                    const modal = document.createElement('div');
+                    modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50';
+                    modal.innerHTML = `
+                        <div class="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold">Hospital Pages</h3>
+                                <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-2 max-h-96 overflow-y-auto">
+                                ${data.data.map(s => `
+                                    <div class="border rounded p-3 hover:bg-gray-50">
+                                        <div class="font-medium text-gray-900 mb-1">${s.name}</div>
+                                        <a href="http://localhost:5173/hospital/${hospitalSlug}/${s.slug}" 
+                                           target="_blank"
+                                           class="text-sm text-blue-600 hover:underline">
+                                            /hospital/${hospitalSlug}/${s.slug}
+                                            <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                        </a>
+                                        <div class="mt-1">
+                                            <code class="text-xs bg-gray-100 px-2 py-1 rounded">specialty slug: ${s.slug}</code>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                } else {
+                    alert('No specialties assigned to this hospital. Please edit the hospital and select specialties.');
+                }
+            } catch (e) {
+                alert('Error loading hospital pages');
+            }
+        }
+
+        async function loadHospitalSpecialties(hospitalId = '') {
+            const container = document.getElementById('hospitalSpecialtiesCheckboxes');
+            if (!container) return;
+
+            container.innerHTML = '<div class="col-span-2 text-center py-2 text-gray-500">Loading specialties...</div>';
+
+            try {
+                // Get all specialties
+                const specialtiesResponse = await fetch(`${API_BASE_URL}/specialties`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const specialtiesData = await specialtiesResponse.json();
+
+                // Get hospital's current specialties if editing
+                let hospitalSpecialtyIds = [];
+                if (hospitalId) {
+                    const hospitalSpecResponse = await fetch(`${API_BASE_URL}/hospitals/${hospitalId}/specialties`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    const hospitalSpecData = await hospitalSpecResponse.json();
+                    if (hospitalSpecData.success) {
+                        hospitalSpecialtyIds = hospitalSpecData.data.map(s => s.id);
+                    }
+                }
+
+                if (specialtiesData.success && specialtiesData.data.specialties.length > 0) {
+                    container.innerHTML = specialtiesData.data.specialties.map(s => `
+                        <div class="flex items-center">
+                            <input type="checkbox" 
+                                   id="specialty_${s.id}" 
+                                   value="${s.id}" 
+                                   ${hospitalSpecialtyIds.includes(s.id) ? 'checked' : ''}
+                                   class="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <label for="specialty_${s.id}" class="text-sm text-gray-700 cursor-pointer">${s.name}</label>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="col-span-2 text-center py-2 text-gray-500">No specialties available</div>';
+                }
+            } catch (e) {
+                console.error('Error loading specialties:', e);
+                container.innerHTML = '<div class="col-span-2 text-center py-2 text-red-500">Error loading specialties</div>';
+            }
+        }
+
+        async function loadDoctorOptions(selectId, selectedId = null) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = '<option value="">Loading...</option>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/doctors`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    select.innerHTML = '<option value="">Select Doctor</option>' + data.data.doctors.map(d => `<option value="${d.id}" ${d.id == selectedId ? 'selected' : ''}>${d.name}</option>`).join('');
+                }
+            } catch (e) {
+                select.innerHTML = '<option value="">Error loading doctors</option>';
+            }
+        }
+
+        // Doctors
+        async function loadDoctors() {
+            const listDiv = document.getElementById('doctorsList');
+            listDiv.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto mb-4"></div><p class="text-gray-500">Loading doctors...</p></div>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/doctors`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success && Array.isArray(data.data.doctors) && data.data.doctors.length > 0) {
+                    listDiv.innerHTML = data.data.doctors.map(d => {
+                        const imageHtml = d.image
+                            ? `<img src="${getImageUrl(d.image)}" class="w-10 h-10 rounded-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="w-10 h-10 rounded-full bg-gray-200 items-center justify-center hidden" style="display:none;"><i class="fas fa-user-md text-gray-400"></i></div>`
+                            : '<div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"><i class="fas fa-user-md text-gray-400"></i></div>';
+
+                        return `
+                        <div class="border-b border-gray-200 py-4 flex justify-between items-center">
+                            <div class="flex items-center gap-4">
+                                ${imageHtml}
+                                <div>
+                                    <h3 class="font-semibold">Dr. ${d.name}</h3>
+                                    <p class="text-sm text-gray-600">${d.specialization || ''}</p>
+                                    <p class="text-xs text-gray-500">${d.hospital?.name || 'No Hospital'}</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openDoctorModal('${d.id}')" class="text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteDoctor('${d.id}')" class="text-red-600 hover:bg-red-50 px-2 py-1 rounded"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        `;
+                    }).join('');
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-gray-500 py-4">No doctors found.</p>';
+                }
+            } catch (e) {
+                listDiv.innerHTML = '<p class="text-center text-red-500 py-4">Error loading doctors.</p>';
+                console.error('Error loading doctors:', e);
+            }
+        }
+
+        // Doctor Modal Functions
+        async function openDoctorModal(id = null) {
+            document.getElementById('doctorModalTitle').textContent = id ? 'Edit Doctor' : 'Add Doctor';
+            document.getElementById('doctorId').value = id || '';
+
+            // Load hospitals and specialties for dropdowns
+            await loadHospitalOptions();
+            await loadSpecialtyOptions();
+
+            if (id) {
+                // Load existing doctor data
+                try {
+                    const response = await fetch(`${API_BASE_URL}/doctors/${id}`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        const doctor = data.data;
+                        document.getElementById('doctorName').value = doctor.name || '';
+                        document.getElementById('doctorSpecialization').value = doctor.specialization || '';
+                        document.getElementById('doctorExperience').value = doctor.experience || '';
+                        document.getElementById('doctorHospitalId').value = doctor.hospitalId || '';
+                        document.getElementById('doctorSpecialtyId').value = doctor.specialtyId || '';
+                        document.getElementById('doctorRating').value = doctor.rating || '';
+                        document.getElementById('doctorPatientsTreated').value = doctor.patientsTreated || '';
+                        document.getElementById('doctorReviews').value = doctor.reviews || '';
+                        document.getElementById('doctorEmail').value = doctor.email || '';
+                        document.getElementById('doctorPhone').value = doctor.phone || '';
+                        document.getElementById('doctorConsultationFee').value = doctor.consultationFee || '';
+                        document.getElementById('doctorImage').value = doctor.image || '';
+                        previewDoctorImage();
+                        document.getElementById('doctorQualifications').value = doctor.qualifications || '';
+                        document.getElementById('doctorExpertise').value = Array.isArray(doctor.expertise) ? doctor.expertise.join(', ') : (doctor.expertise || '');
+                        document.getElementById('doctorBio').value = doctor.bio || '';
+                        document.getElementById('doctorAvailableDays').value = Array.isArray(doctor.availableDays) ? doctor.availableDays.join(', ') : (doctor.availableDays || '');
+                        document.getElementById('doctorIsActive').checked = doctor.isActive !== false;
+                    }
+                } catch (error) {
+                    console.error('Error loading doctor:', error);
+                }
+            } else {
+                // Reset form for new doctor
+                document.getElementById('doctorForm').reset();
+                document.getElementById('doctorIsActive').checked = true;
+                document.getElementById('doctorImagePreview').classList.add('hidden');
+            }
+
+            document.getElementById('doctorModal').classList.remove('hidden');
+        }
+
+        function closeDoctorModal() {
+            document.getElementById('doctorModal').classList.add('hidden');
+            document.getElementById('doctorForm').reset();
+            document.getElementById('doctorImagePreview').classList.add('hidden');
+        }
+
+        function previewDoctorImage() {
+            const imageUrl = document.getElementById('doctorImage').value;
+            const previewDiv = document.getElementById('doctorImagePreview');
+            const previewImg = document.getElementById('doctorImagePreviewImg');
+
+            if (imageUrl && imageUrl.trim() !== '') {
+                previewImg.src = getImageUrl(imageUrl);
+                previewImg.onerror = function () {
+                    previewDiv.classList.add('hidden');
+                };
+                previewDiv.classList.remove('hidden');
+            } else {
+                previewDiv.classList.add('hidden');
+            }
+        }
+
+        async function saveDoctorForm(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('doctorId').value;
+            const formData = {
+                name: document.getElementById('doctorName').value,
+                specialization: document.getElementById('doctorSpecialization').value,
+                experience: document.getElementById('doctorExperience').value,
+                hospitalId: parseInt(document.getElementById('doctorHospitalId').value),
+                specialtyId: parseInt(document.getElementById('doctorSpecialtyId').value),
+                rating: parseFloat(document.getElementById('doctorRating').value) || null,
+                patientsTreated: document.getElementById('doctorPatientsTreated').value || null,
+                reviews: document.getElementById('doctorReviews').value || null,
+                email: document.getElementById('doctorEmail').value || null,
+                phone: document.getElementById('doctorPhone').value || null,
+                consultationFee: parseFloat(document.getElementById('doctorConsultationFee').value) || null,
+                image: document.getElementById('doctorImage').value || null,
+                qualifications: document.getElementById('doctorQualifications').value || null,
+                expertise: document.getElementById('doctorExpertise').value ? document.getElementById('doctorExpertise').value.split(',').map(s => s.trim()).filter(s => s) : [],
+                bio: document.getElementById('doctorBio').value || null,
+                availableDays: document.getElementById('doctorAvailableDays').value ? document.getElementById('doctorAvailableDays').value.split(',').map(s => s.trim()).filter(s => s) : [],
+                isActive: document.getElementById('doctorIsActive').checked
+            };
+
+            try {
+                const url = id ? `${API_BASE_URL}/doctors/${id}` : `${API_BASE_URL}/doctors`;
+                const method = id ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert(id ? 'Doctor updated successfully!' : 'Doctor created successfully!');
+                    closeDoctorModal();
+                    loadDoctors();
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to save doctor'));
+                }
+            } catch (error) {
+                console.error('Error saving doctor:', error);
+                alert('Error saving doctor. Please try again.');
+            }
+        }
+
+        async function loadHospitalOptions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/hospitals?limit=100`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const hospitalSelect = document.getElementById('doctorHospitalId');
+                    const treatmentHospitalSelect = document.getElementById('treatmentHospitalId');
+                    const options = data.data.hospitals.map(h =>
+                        `<option value="${h.id}">${h.name} - ${h.city}</option>`
+                    ).join('');
+                    if (hospitalSelect) hospitalSelect.innerHTML = '<option value="">Select Hospital</option>' + options;
+                    if (treatmentHospitalSelect) treatmentHospitalSelect.innerHTML = '<option value="">Select Hospital</option>' + options;
+                }
+            } catch (error) {
+                console.error('Error loading hospitals:', error);
+            }
+        }
+
+        async function loadSpecialtyOptions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/specialties?limit=100`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const specialtySelect = document.getElementById('doctorSpecialtyId');
+                    const treatmentSpecialtySelect = document.getElementById('treatmentSpecialtyId');
+                    const options = data.data.specialties.map(s =>
+                        `<option value="${s.id}">${s.name}</option>`
+                    ).join('');
+                    if (specialtySelect) specialtySelect.innerHTML = '<option value="">Select Specialty</option>' + options;
+                    if (treatmentSpecialtySelect) treatmentSpecialtySelect.innerHTML = '<option value="">Select Specialty</option>' + options;
+                }
+            } catch (error) {
+                console.error('Error loading specialties:', error);
+            }
+        }
+
+        async function deleteDoctor(id) {
+            if (!id) return;
+            if (confirm('Delete this doctor?')) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/doctors/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Doctor deleted successfully!');
+                        loadDoctors();
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to delete doctor'));
+                    }
+                } catch (error) {
+                    console.error('Error deleting doctor:', error);
+                    alert('Error deleting doctor. Please try again.');
+                }
+            }
+        }
+
+        // Treatment Modal Functions
+        async function openTreatmentModal(id = null) {
+            document.getElementById('treatmentModalTitle').textContent = id ? 'Edit Treatment' : 'Add Treatment';
+            document.getElementById('treatmentId').value = id || '';
+
+            // Load hospitals and specialties for dropdowns
+            await loadHospitalOptions();
+            await loadSpecialtyOptions();
+
+            if (id) {
+                // Load existing treatment data
+                try {
+                    const response = await fetch(`${API_BASE_URL}/treatments/${id}`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        const treatment = data.data;
+                        document.getElementById('treatmentName').value = treatment.name || '';
+                        document.getElementById('treatmentCost').value = treatment.cost || '';
+                        document.getElementById('treatmentHospitalId').value = treatment.hospitalId || '';
+                        document.getElementById('treatmentSpecialtyId').value = treatment.specialtyId || '';
+                        document.getElementById('treatmentDuration').value = treatment.duration || '';
+                        document.getElementById('treatmentStay').value = treatment.stay || '';
+                        document.getElementById('treatmentSuccessRate').value = treatment.successRate || '';
+                        document.getElementById('treatmentProcedureType').value = treatment.procedureType || '';
+                        document.getElementById('treatmentDescription').value = treatment.description || '';
+                        document.getElementById('treatmentIsActive').checked = treatment.isActive !== false;
+                    }
+                } catch (error) {
+                    console.error('Error loading treatment:', error);
+                }
+            } else {
+                // Reset form for new treatment
+                document.getElementById('treatmentForm').reset();
+                document.getElementById('treatmentIsActive').checked = true;
+            }
+
+            document.getElementById('treatmentModal').classList.remove('hidden');
+        }
+
+        function closeTreatmentModal() {
+            document.getElementById('treatmentModal').classList.add('hidden');
+            document.getElementById('treatmentForm').reset();
+        }
+
+        async function saveTreatmentForm(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('treatmentId').value;
+            const formData = {
+                name: document.getElementById('treatmentName').value,
+                cost: document.getElementById('treatmentCost').value,
+                hospitalId: parseInt(document.getElementById('treatmentHospitalId').value),
+                specialtyId: parseInt(document.getElementById('treatmentSpecialtyId').value),
+                duration: document.getElementById('treatmentDuration').value || null,
+                stay: document.getElementById('treatmentStay').value || null,
+                successRate: parseFloat(document.getElementById('treatmentSuccessRate').value) || null,
+                procedureType: document.getElementById('treatmentProcedureType').value || null,
+                description: document.getElementById('treatmentDescription').value || null,
+                isActive: document.getElementById('treatmentIsActive').checked
+            };
+
+            try {
+                const url = id ? `${API_BASE_URL}/treatments/${id}` : `${API_BASE_URL}/treatments`;
+                const method = id ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert(id ? 'Treatment updated successfully!' : 'Treatment created successfully!');
+                    closeTreatmentModal();
+                    loadTreatments();
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to save treatment'));
+                }
+            } catch (error) {
+                console.error('Error saving treatment:', error);
+                alert('Error saving treatment. Please try again.');
+            }
+        }
+
+        async function deleteTreatment(id) {
+            if (!id) return;
+            if (confirm('Delete this treatment?')) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/treatments/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Treatment deleted successfully!');
+                        loadTreatments();
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to delete treatment'));
+                    }
+                } catch (error) {
+                    console.error('Error deleting treatment:', error);
+                    alert('Error deleting treatment. Please try again.');
+                }
+            }
+        }
+
+        // Treatments
+        async function loadTreatments() {
+            const listDiv = document.getElementById('treatmentsList');
+            listDiv.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto mb-4"></div><p class="text-gray-500">Loading treatments...</p></div>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/treatments`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success && data.data.treatments.length > 0) {
+                    listDiv.innerHTML = data.data.treatments.map(t => `
+                        <div class="border-b border-gray-200 py-4 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-semibold">${t.name}</h3>
+                                <p class="text-sm text-gray-600">${t.description?.substring(0, 100)}...</p>
+                                <p class="text-sm font-medium text-indigo-600">$${t.cost}</p>
+                                <p class="text-xs text-gray-500">${t.hospital?.name || 'No Hospital'}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openTreatmentModal('${t.id}')" class="text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteTreatment('${t.id}')" class="text-red-600 hover:bg-red-50 px-2 py-1 rounded"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-gray-500 py-4">No treatments found.</p>';
+                }
+            } catch (e) {
+                listDiv.innerHTML = '<p class="text-center text-red-500 py-4">Error loading treatments.</p>';
+            }
+        }
+
+        // Specialties
+        async function loadSpecialties() {
+            const listDiv = document.getElementById('specialtiesList');
+            listDiv.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto mb-4"></div><p class="text-gray-500">Loading specialties...</p></div>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/specialties`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success && data.data.specialties.length > 0) {
+                    listDiv.innerHTML = data.data.specialties.map(s => `
+                    <div class="border-b border-gray-200 py-4 flex justify-between items-center">
+                            <div class="flex items-center gap-4 flex-1">
+                                ${s.imageUrl ? `<img src="${s.imageUrl}" class="w-10 h-10 rounded-full object-cover">` : '<div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"><i class="fas fa-stethoscope text-gray-400"></i></div>'}
+                                <div class="flex-1">
+                                    <h3 class="font-semibold">${s.name}</h3>
+                                    <p class="text-sm text-gray-600">${s.description?.substring(0, 100) || 'No description'}...</p>
+                                    <code class="text-xs bg-gray-100 px-2 py-1 rounded text-blue-600">slug: ${s.slug}</code>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openSpecialtyModal('${s.id}', '${s.name}', '${s.description || ''}', '${s.imageUrl || ''}')" class="text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteSpecialty('${s.id}')" class="text-red-600 hover:bg-red-50 px-2 py-1 rounded"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        `).join('');
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-gray-500 py-4">No specialties found.</p>';
+                }
+            } catch (e) {
+                listDiv.innerHTML = '<p class="text-center text-red-500 py-4">Error loading specialties.</p>';
+            }
+        }
+
+        function previewSpecialtyImage(event) {
+            const file = event.target.files[0];
+            const previewDiv = document.getElementById('specialtyImagePreview');
+            if (file && previewDiv) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewDiv.innerHTML = `<img src="${e.target.result}" class="w-20 h-20 rounded object-cover mt-2" alt="Image preview">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function openSpecialtyModal(id = '', name = '', description = '', imageUrl = '') {
+            document.getElementById('specialtyId').value = id;
+            document.getElementById('specialtyName').value = name;
+            document.getElementById('specialtyDescription').value = description;
+            document.getElementById('specialtyImage').value = '';
+
+            // Show existing image preview if available
+            const previewDiv = document.getElementById('specialtyImagePreview');
+            if (imageUrl && previewDiv) {
+                previewDiv.innerHTML = `<img src="${imageUrl}" class="w-20 h-20 rounded object-cover mt-2" alt="Current image">`;
+            } else if (previewDiv) {
+                previewDiv.innerHTML = '';
+            }
+
+            document.getElementById('specialtyModalTitle').textContent = id ? 'Edit Specialty' : 'Add Specialty';
+            document.getElementById('specialtyModal').classList.remove('hidden');
+        }
+
+        document.getElementById('specialtyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('specialtyId').value;
+            const formData = new FormData();
+            formData.append('name', document.getElementById('specialtyName').value);
+            formData.append('description', document.getElementById('specialtyDescription').value);
+            const imageFile = document.getElementById('specialtyImage').files[0];
+            if (imageFile) formData.append('image', imageFile);
+            const url = id ? `${API_BASE_URL}/specialties/${id}` : `${API_BASE_URL}/specialties`;
+            const method = id ? 'PUT' : 'POST';
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Authorization': `Bearer ${authToken}` },
+                    body: formData
+                });
+                if (response.ok) {
+                    closeModal('specialtyModal');
+                    loadSpecialties();
+                } else {
+                    const data = await response.json();
+                    alert('Error saving specialty: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error saving specialty');
+            }
+        });
+
+        async function deleteSpecialty(id) {
+            if (confirm('Delete this specialty?')) {
+                await fetch(`${API_BASE_URL}/specialties/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                loadSpecialties();
+            }
+        }
+
+        // Testimonials
+        async function loadTestimonials() {
+            const listDiv = document.getElementById('testimonialsList');
+            listDiv.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto mb-4"></div><p class="text-gray-500">Loading testimonials...</p></div>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/testimonials`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success && data.data.testimonials.length > 0) {
+                    listDiv.innerHTML = data.data.testimonials.map(t => `
+                    <div class="border-b border-gray-200 py-4 flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h3 class="font-semibold">${t.patientName}</h3>
+                                    <span class="px-2 py-0.5 rounded-full text-xs ${t.isApproved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${t.isApproved ? 'Approved' : 'Pending'}</span>
+                                </div>
+                                <p class="text-sm text-gray-600 italic">"${t.story}"</p>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    ${t.hospital ? `<i class="fas fa-hospital mr-1"></i>${t.hospital.name}` : ''}
+                                    ${t.doctor ? `<span class="ml-2"><i class="fas fa-user-md mr-1"></i>Dr. ${t.doctor.name}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex gap-2 ml-4">
+                                ${!t.isApproved ? `<button onclick="approveTestimonial('${t.id}')" class="text-green-600 hover:bg-green-50 px-2 py-1 rounded" title="Approve"><i class="fas fa-check"></i></button>` : ''}
+                                <button onclick="openTestimonialModal('${t.id}', '${t.patientName}', '${t.age || ''}', '${t.country || ''}', '${t.treatment || ''}', '${t.rating || ''}', '${t.story}', '${t.hospitalId}', '${t.doctorId || ''}', '${t.date ? t.date.split('T')[0] : ''}', '${t.image || ''}')" class="text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteTestimonial('${t.id}')" class="text-red-600 hover:bg-red-50 px-2 py-1 rounded" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        `).join('');
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-gray-500 py-4">No testimonials found.</p>';
+                }
+            } catch (e) {
+                listDiv.innerHTML = '<p class="text-center text-red-500 py-4">Error loading testimonials.</p>';
+            }
+        }
+
+        async function openTestimonialModal(id = '', patientName = '', age = '', country = '', treatment = '', rating = '', story = '', hospitalId = '', doctorId = '', date = '', image = '') {
+            document.getElementById('testimonialId').value = id;
+            document.getElementById('testimonialPatientName').value = patientName;
+            document.getElementById('testimonialAge').value = age;
+            document.getElementById('testimonialCountry').value = country;
+            document.getElementById('testimonialRating').value = rating;
+            document.getElementById('testimonialStory').value = story;
+            document.getElementById('testimonialDate').value = date;
+            document.getElementById('testimonialImage').value = '';
+            document.getElementById('testimonialModalTitle').textContent = id ? 'Edit Testimonial' : 'Add Testimonial';
+            document.getElementById('testimonialModal').classList.remove('hidden');
+            existingTestimonialImageUrl = image ? getImageUrl(image) : '';
+            showTestimonialImagePreview(existingTestimonialImageUrl);
+
+            // Load dropdowns asynchronously after modal is shown
+            loadTreatmentOptions('testimonialTreatment', treatment);
+            loadHospitalSelectOptions('testimonialHospital', hospitalId);
+            loadDoctorOptions('testimonialDoctor', doctorId);
+        }
+
+        document.getElementById('testimonialForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('testimonialId').value;
+            const formData = new FormData();
+            formData.append('patientName', document.getElementById('testimonialPatientName').value);
+            formData.append('age', document.getElementById('testimonialAge').value);
+            formData.append('country', document.getElementById('testimonialCountry').value);
+            formData.append('treatment', document.getElementById('testimonialTreatment').value);
+            formData.append('rating', document.getElementById('testimonialRating').value);
+            formData.append('story', document.getElementById('testimonialStory').value);
+            formData.append('hospitalId', document.getElementById('testimonialHospital').value);
+            formData.append('doctorId', document.getElementById('testimonialDoctor').value);
+            formData.append('date', document.getElementById('testimonialDate').value);
+            const imageFile = document.getElementById('testimonialImage').files[0];
+            if (imageFile) formData.append('image', imageFile);
+            const url = id ? `${API_BASE_URL}/testimonials/${id}` : `${API_BASE_URL}/testimonials`;
+            const method = id ? 'PUT' : 'POST';
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Authorization': `Bearer ${authToken}` },
+                    body: formData
+                });
+                if (response.ok) {
+                    closeModal('testimonialModal');
+                    loadTestimonials();
+                } else {
+                    const data = await response.json();
+                    alert('Error saving testimonial: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error saving testimonial');
+            }
+        });
+
+        async function approveTestimonial(id) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/testimonials/${id}/approve`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                if (response.ok) {
+                    loadTestimonials();
+                    loadOverviewData();
+                } else {
+                    alert('Error approving testimonial');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error approving testimonial');
+            }
+        }
+
+        async function deleteTestimonial(id) {
+            if (confirm('Delete this testimonial?')) {
+                await fetch(`${API_BASE_URL}/testimonials/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                loadTestimonials();
+            }
+        }
+
+        // Load treatment options from API
+        async function loadTreatmentOptions(selectId, selectedValue = '') {
+            const select = document.getElementById(selectId);
+            try {
+                const response = await fetch(`${API_BASE_URL}/treatments?limit=100&isActive=true`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success && data.data.treatments) {
+                    select.innerHTML = '<option value="">Select Treatment</option>';
+                    data.data.treatments.forEach(treatment => {
+                        const option = document.createElement('option');
+                        option.value = treatment.name;
+                        option.textContent = treatment.name;
+                        if (treatment.name === selectedValue) {
+                            option.selected = true;
+                        }
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading treatments:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>
