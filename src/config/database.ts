@@ -34,6 +34,12 @@ const sequelize = useSqlite
           timestamps: true,
           underscored: true,
         },
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
       }
     );
 
