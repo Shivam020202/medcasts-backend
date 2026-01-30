@@ -14,7 +14,7 @@ Your server team confirmed that the Node.js application is running correctly. Th
 - ❌ Database tables (hospitals, specialties, doctors, treatments, etc.)
 - ❌ This is causing "Table doesn't exist" errors on all API endpoints
 
-## Solution: Create Database Tables
+## Solution: Create Database Tables & Seed Data
 
 ### Step 1: Access cPanel phpMyAdmin
 1. Log into your cPanel at your hosting provider
@@ -30,12 +30,12 @@ Your server team confirmed that the Node.js application is running correctly. Th
 
 ### Step 3: Verify Tables Created
 After execution, you should see these 7 tables in the left sidebar:
-- ✓ hospitals
-- ✓ users (with default admin user)
-- ✓ specialties
-- ✓ doctors
-- ✓ treatments
-- ✓ testimonials
+- ✓ hospitals (with 5 sample hospitals)
+- ✓ users (with admin user)
+- ✓ specialties (with 6 sample specialties)
+- ✓ doctors (with 6 sample doctors)
+- ✓ treatments (with 6 sample treatments)
+- ✓ testimonials (with 4 sample testimonials)
 - ✓ hospital_specialties
 
 ### Step 4: Restart Node.js Application
@@ -47,14 +47,14 @@ After execution, you should see these 7 tables in the left sidebar:
 
 ### Step 5: Test Your API
 Visit these URLs in your browser:
-- https://node.medcasts.com/api/hospitals (should return `[]` empty array, not error)
-- https://node.medcasts.com/api/specialties (should return `[]` empty array, not error)
-- https://staging.medcasts.com (frontend should load without 503 errors)
+- https://node.medcasts.com/api/hospitals (should return JSON data with Apollo, Medanta, etc.)
+- https://node.medcasts.com/api/specialties (should return JSON data with Cardiology, Oncology, etc.)
+- https://staging.medcasts.com (frontend should load with real data)
 
 ## Expected Results After Setup
 
 ### ✅ Success Indicators:
-- API endpoints return `{ data: [], pagination: {...} }` instead of errors
+- API endpoints return actual data (not empty arrays)
 - Frontend loads without 503 errors  
 - Admin panel accessible at https://node.medcasts.com/admin
 - You can log in with: admin@medcast.com / Admin@123
@@ -67,29 +67,12 @@ Check the application logs in cPanel for:
 
 ## Next Steps After Database Setup
 
-1. **Add Initial Data**: Use the admin panel or seed scripts to add:
-   - Hospitals
-   - Specialties
-   - Doctors
-   - Treatments
-
-2. **Test Frontend**: Visit https://staging.medcasts.com and verify:
-   - Home page loads
-   - Hospital listings appear
+1. **Test Frontend**: Visit https://staging.medcasts.com and verify:
+   - Home page loads with hospital cards
    - Search functionality works
+   - Doctor profiles are visible
 
-3. **Production Deployment**: Your application is now ready for production use!
-
-## Code Changes Made
-
-### Local Development Fix
-- Fixed `.env` file formatting error (line 10-11)
-- SQLite is now correctly enabled for local development
-
-### Production Configuration  
-- Modified `backend/src/config/database.ts` to force MySQL in production
-- SQLite only used in development mode
-- Production always uses MySQL regardless of environment variables
+2. **Production Deployment**: Your application is now ready for production use!
 
 ## Files Reference
 
@@ -107,5 +90,5 @@ If you encounter any issues:
 
 ---
 
-**Last Updated**: November 29, 2025  
+**Last Updated**: December 3, 2025  
 **Status**: Ready for database setup in phpMyAdmin

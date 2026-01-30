@@ -25,9 +25,13 @@ export const errorHandler = (
   if (process.env.NODE_ENV === "development") {
     res.status(err.statusCode).json({
       success: false,
-      error: err,
       message: err.message,
       stack: err.stack,
+      error: {
+        statusCode: err.statusCode,
+        status: err.status,
+        ...err
+      }
     });
   } else {
     // Production

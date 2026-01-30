@@ -34,12 +34,16 @@ const sequelize = useSqlite
           timestamps: true,
           underscored: true,
         },
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
-        },
+        dialectOptions:
+          config.database.host === "localhost" ||
+          config.database.host === "127.0.0.1"
+            ? {}
+            : {
+                ssl: {
+                  require: true,
+                  rejectUnauthorized: false,
+                },
+              },
       }
     );
 

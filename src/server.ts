@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import compression from "compression";
@@ -14,25 +15,6 @@ const app: Application = express();
 
 // Trust proxy - required for rate limiting and X-Forwarded-For headers behind cPanel/Passenger
 app.set("trust proxy", 1);
-
-// Manual CORS headers - avoiding duplicate headers from cPanel
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = config.cors.allowedOrigins;
-  
-  if (origin && (config.nodeEnv === "development" || allowedOrigins.includes(origin))) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  }
-  
-  // Handle preflight
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
-});
 
 // Security middleware
 app.use(
@@ -54,6 +36,18 @@ app.use(
     },
   })
 );
+
+// Enable CORS for development
+if (config.nodeEnv === "development") {
+  app.use(
+    cors({
+      origin: true, // Allow all origins in development
+      credentials: true,
+    })
+  );
+}
+// For production (cPanel), CORS is handled by the server configuration
+// If you need to re-enable Express CORS for production, you MUST disable cPanel's CORS first
 
 // Rate limiting with config
 const limiter = rateLimit({
