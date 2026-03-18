@@ -8,12 +8,12 @@ import { Op } from "sequelize";
 export const getAllTreatments = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const {
       page = 1,
-      limit = 10,
+      limit = 500,
       search,
       hospitalId,
       specialtyId,
@@ -72,7 +72,7 @@ export const getAllTreatments = async (
 export const getTreatmentById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -97,7 +97,7 @@ export const getTreatmentById = async (
 export const createTreatment = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const {
@@ -153,7 +153,7 @@ export const createTreatment = async (
 export const updateTreatment = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -184,7 +184,7 @@ export const updateTreatment = async (
 export const deleteTreatment = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -209,7 +209,7 @@ export const deleteTreatment = async (
 export const getPopularTreatments = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const treatments = await Treatment.findAll({
@@ -237,7 +237,7 @@ export const getPopularTreatments = async (
 export const togglePopularStatus = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -259,7 +259,7 @@ export const togglePopularStatus = async (
       if (popularCount >= 3) {
         throw new AppError(
           "Maximum of 3 treatments can be marked as popular. Please unmark another treatment first.",
-          400
+          400,
         );
       }
     }
@@ -276,4 +276,3 @@ export const togglePopularStatus = async (
     next(error);
   }
 };
-

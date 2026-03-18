@@ -12,6 +12,7 @@
     <link rel="icon" href="favicon.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body {
@@ -71,6 +72,7 @@
                     class="nav-item block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Testimonials</a><a
                     href="#" onclick="logout()"
                     class="nav-item block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 mt-8">Logout</a>
+                <p class="italic text-white mt-4 text-xs max-w-xs w-full ml-4">Made by Branding Pioneers</p>
             </nav>
         </aside>
         <div class="flex-1 flex flex-col overflow-hidden">
@@ -78,6 +80,7 @@
                 <div class="flex items-center"><button class="text-gray-500 focus:outline-none md:hidden"><i
                             class="fas fa-bars"></i></button>
                     <h2 id="pageTitle" class="text-2xl font-semibold text-gray-800 ml-4">Dashboard Overview</h2>
+
                 </div>
                 <div class="flex items-center gap-4"><span id="currentTime" class="text-gray-600 font-medium"></span>
                     <div class="relative"><button class="flex items-center text-gray-500 focus:outline-none"><span
@@ -90,45 +93,216 @@
             </header>
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6">
 
-                <div id="overviewSection"
-                    class="content-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3"><i
-                                    class="fas fa-hospital text-white text-2xl"></i></div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-500">Total Hospitals</p>
-                                <p class="text-2xl font-semibold text-gray-900" id="totalHospitals">0</p>
+                <div id="overviewSection" class="content-section">
+                    <!-- Top Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Total Hospitals</p>
+                                    <p class="text-3xl font-bold text-gray-900" id="totalHospitals">0</p>
+                                    <p class="text-xs text-green-600 mt-1" id="hospitalsGrowth"><i
+                                            class="fas fa-arrow-up mr-1"></i>Active</p>
+                                </div>
+                                <div class="flex-shrink-0 bg-indigo-500 rounded-full p-4"><i
+                                        class="fas fa-hospital text-white text-2xl"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Total Doctors</p>
+                                    <p class="text-3xl font-bold text-gray-900" id="totalDoctors">0</p>
+                                    <p class="text-xs text-blue-600 mt-1"><i class="fas fa-user-check mr-1"></i>Verified
+                                    </p>
+                                </div>
+                                <div class="flex-shrink-0 bg-green-500 rounded-full p-4"><i
+                                        class="fas fa-user-md text-white text-2xl"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Total Treatments</p>
+                                    <p class="text-3xl font-bold text-gray-900" id="totalTreatments">0</p>
+                                    <p class="text-xs text-purple-600 mt-1" id="popularTreatments"><i
+                                            class="fas fa-fire mr-1"></i>0 Popular</p>
+                                </div>
+                                <div class="flex-shrink-0 bg-yellow-500 rounded-full p-4"><i
+                                        class="fas fa-procedures text-white text-2xl"></i></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Pending Reviews</p>
+                                    <p class="text-3xl font-bold text-gray-900" id="pendingTestimonials">0</p>
+                                    <p class="text-xs text-orange-600 mt-1" id="approvedTestimonials"><i
+                                            class="fas fa-check-circle mr-1"></i>0 Approved</p>
+                                </div>
+                                <div class="flex-shrink-0 bg-red-500 rounded-full p-4"><i
+                                        class="fas fa-comments text-white text-2xl"></i></div>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-green-500 rounded-md p-3"><i
-                                    class="fas fa-user-md text-white text-2xl"></i></div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-500">Total Doctors</p>
-                                <p class="text-2xl font-semibold text-gray-900" id="totalDoctors">0</p>
+
+                    <!-- Secondary Stats Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium opacity-80">Total Specialties</p>
+                                    <p class="text-3xl font-bold" id="totalSpecialties">0</p>
+                                </div>
+                                <i class="fas fa-stethoscope text-4xl opacity-50"></i>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-white/20">
+                                <p class="text-xs opacity-80">Medical departments available</p>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-500 to-teal-600 rounded-lg shadow p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium opacity-80">Avg Hospital Rating</p>
+                                    <p class="text-3xl font-bold" id="avgRating">0.0</p>
+                                </div>
+                                <i class="fas fa-star text-4xl opacity-50"></i>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-white/20">
+                                <div class="flex items-center" id="ratingStars">
+                                    <i class="fas fa-star text-yellow-300 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-300 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-300 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-300 mr-1"></i>
+                                    <i class="far fa-star text-yellow-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-lg shadow p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium opacity-80">Total Bed Capacity</p>
+                                    <p class="text-3xl font-bold" id="totalBeds">0</p>
+                                </div>
+                                <i class="fas fa-bed text-4xl opacity-50"></i>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-white/20">
+                                <p class="text-xs opacity-80">Across all hospitals</p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3"><i
-                                    class="fas fa-procedures text-white text-2xl"></i></div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-500">Total Treatments</p>
-                                <p class="text-2xl font-semibold text-gray-900" id="totalTreatments">0</p>
+
+                    <!-- Charts Row -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Doctors per Specialty Chart -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Doctors by Specialty</h3>
+                                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Distribution</span>
+                            </div>
+                            <div id="doctorsChartContainer" class="h-64 relative">
+                                <canvas id="doctorsBySpecialtyChart"></canvas>
+                                <div id="doctorsChartEmpty" style="display: none;"
+                                    class="absolute inset-0 flex items-center justify-center text-gray-400">No doctor
+                                    data available</div>
+                            </div>
+                        </div>
+                        <!-- Hospitals by City Chart -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Hospitals by City</h3>
+                                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Location</span>
+                            </div>
+                            <div id="hospitalsChartContainer" class="h-64 relative">
+                                <canvas id="hospitalsByCityChart"></canvas>
+                                <div id="hospitalsChartEmpty" style="display: none;"
+                                    class="absolute inset-0 flex items-center justify-center text-gray-400">No hospital
+                                    data available</div>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-red-500 rounded-md p-3"><i
-                                    class="fas fa-comments text-white text-2xl"></i></div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-500">Pending Reviews</p>
-                                <p class="text-2xl font-semibold text-gray-900" id="pendingTestimonials">0</p>
+
+                    <!-- Bottom Row: Activity Log & Quick Actions -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Recent Activity Log -->
+                        <div class="lg:col-span-2 bg-white rounded-lg shadow">
+                            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-gray-800"><i
+                                        class="fas fa-history mr-2 text-indigo-500"></i>Recent Activity</h3>
+                                <button onclick="refreshActivityLog()"
+                                    class="text-sm text-indigo-600 hover:text-indigo-800"><i
+                                        class="fas fa-sync-alt mr-1"></i>Refresh</button>
+                            </div>
+                            <div id="activityLog" class="p-4 max-h-80 overflow-y-auto">
+                                <div class="text-center py-4 text-gray-400">
+                                    <div class="loading mx-auto"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions & Top Items -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="p-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800"><i
+                                        class="fas fa-bolt mr-2 text-yellow-500"></i>Quick Actions</h3>
+                            </div>
+                            <div class="p-4 space-y-3">
+                                <button onclick="showSection(event, 'hospitals'); openHospitalModal()"
+                                    class="w-full flex items-center p-3 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
+                                    <i class="fas fa-plus-circle text-indigo-600 mr-3"></i>
+                                    <span class="text-sm font-medium text-gray-700">Add New Hospital</span>
+                                </button>
+                                <button onclick="showSection(event, 'doctors'); openDoctorModal()"
+                                    class="w-full flex items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg transition">
+                                    <i class="fas fa-user-plus text-green-600 mr-3"></i>
+                                    <span class="text-sm font-medium text-gray-700">Add New Doctor</span>
+                                </button>
+                                <button onclick="showSection(event, 'treatments'); openTreatmentModal()"
+                                    class="w-full flex items-center p-3 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition">
+                                    <i class="fas fa-notes-medical text-yellow-600 mr-3"></i>
+                                    <span class="text-sm font-medium text-gray-700">Add New Treatment</span>
+                                </button>
+                                <button onclick="showSection(event, 'testimonials')"
+                                    class="w-full flex items-center p-3 bg-red-50 hover:bg-red-100 rounded-lg transition">
+                                    <i class="fas fa-clipboard-check text-red-600 mr-3"></i>
+                                    <span class="text-sm font-medium text-gray-700">Review Testimonials</span>
+                                </button>
+                            </div>
+                            <div class="p-4 border-t border-gray-200">
+                                <h4 class="text-sm font-semibold text-gray-600 mb-3"><i
+                                        class="fas fa-crown text-yellow-500 mr-2"></i>Top Rated Hospitals</h4>
+                                <div id="topHospitalsList" class="space-y-2">
+                                    <div class="text-center py-2 text-gray-400 text-sm">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Health Section -->
+                    <div class="mt-6 bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800"><i
+                                    class="fas fa-heartbeat mr-2 text-red-500"></i>Data Health Check</h3>
+                            <button onclick="reloadDataHealthCheck()"
+                                class="text-sm bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"><i
+                                    class="fas fa-sync-alt mr-1"></i>Run Check</button>
+                        </div>
+                        <div id="dataHealthGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-green-600" id="healthHospitalsWithDoctors">-</div>
+                                <div class="text-xs text-gray-500 mt-1">Hospitals with Doctors</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-blue-600" id="healthDoctorsWithImages">-</div>
+                                <div class="text-xs text-gray-500 mt-1">Doctors with Images</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-purple-600" id="healthTreatmentsWithCost">-</div>
+                                <div class="text-xs text-gray-500 mt-1">Treatments with Cost</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-orange-600" id="healthTestimonialsComplete">-</div>
+                                <div class="text-xs text-gray-500 mt-1">Complete Testimonials</div>
                             </div>
                         </div>
                     </div>
@@ -798,21 +972,480 @@
             }
         }
 
+        // Chart instances
+        let doctorsBySpecialtyChart = null;
+        let hospitalsByCityChart = null;
+
         async function loadOverviewData() {
             try {
                 const headers = { 'Authorization': `Bearer ${authToken}` };
-                const [hospitals, doctors, treatments, testimonials] = await Promise.all([
-                    fetch(`${API_BASE_URL}/hospitals`, { headers }).then(r => r.json()),
-                    fetch(`${API_BASE_URL}/doctors`, { headers }).then(r => r.json()),
-                    fetch(`${API_BASE_URL}/treatments`, { headers }).then(r => r.json()),
-                    fetch(`${API_BASE_URL}/testimonials?isApproved=false`, { headers }).then(r => r.json())
-                ]);
-                document.getElementById('totalHospitals').textContent = hospitals.data?.pagination?.total || 0;
-                document.getElementById('totalDoctors').textContent = doctors.data?.pagination?.total || 0;
-                document.getElementById('totalTreatments').textContent = treatments.data?.pagination?.total || 0;
-                document.getElementById('pendingTestimonials').textContent = testimonials.data?.pagination?.total || 0;
+
+                // Fetch all data with error handling for each request
+                let hospitals = { data: { hospitals: [], pagination: { total: 0 } } };
+                let doctors = { data: { doctors: [], pagination: { total: 0 } } };
+                let treatments = { data: { treatments: [], pagination: { total: 0 } } };
+                let testimonials = { data: { testimonials: [], pagination: { total: 0 } } };
+                let approvedTestimonials = { data: { testimonials: [], pagination: { total: 0 } } };
+                let specialties = { data: { specialties: [], pagination: { total: 0 } } };
+
+                try {
+                    const results = await Promise.all([
+                        fetch(`${API_BASE_URL}/hospitals?limit=100`, { headers }).then(r => r.json()).catch(() => hospitals),
+                        fetch(`${API_BASE_URL}/doctors?limit=200`, { headers }).then(r => r.json()).catch(() => doctors),
+                        fetch(`${API_BASE_URL}/treatments?limit=200`, { headers }).then(r => r.json()).catch(() => treatments),
+                        fetch(`${API_BASE_URL}/testimonials?isApproved=false`, { headers }).then(r => r.json()).catch(() => testimonials),
+                        fetch(`${API_BASE_URL}/testimonials?isApproved=true&limit=100`, { headers }).then(r => r.json()).catch(() => approvedTestimonials),
+                        fetch(`${API_BASE_URL}/specialties?limit=100`, { headers }).then(r => r.json()).catch(() => specialties)
+                    ]);
+                    hospitals = results[0];
+                    doctors = results[1];
+                    treatments = results[2];
+                    testimonials = results[3];
+                    approvedTestimonials = results[4];
+                    specialties = results[5];
+                } catch (e) {
+                    console.error('Error fetching overview data:', e);
+                }
+
+                // Basic stats - with safe fallbacks
+                const totalHospitals = hospitals?.data?.pagination?.total || hospitals?.data?.hospitals?.length || 0;
+                const totalDoctors = doctors?.data?.pagination?.total || doctors?.data?.doctors?.length || 0;
+                const totalTreatments = treatments?.data?.pagination?.total || treatments?.data?.treatments?.length || 0;
+                const pendingReviews = testimonials?.data?.pagination?.total || testimonials?.data?.testimonials?.length || 0;
+                const approvedReviews = approvedTestimonials?.data?.pagination?.total || approvedTestimonials?.data?.testimonials?.length || 0;
+                const totalSpecialtiesCount = specialties?.data?.pagination?.total || specialties?.data?.specialties?.length || 0;
+
+                // Update DOM elements safely
+                const setElementText = (id, text) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = text;
+                };
+                const setElementHTML = (id, html) => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = html;
+                };
+
+                setElementText('totalHospitals', totalHospitals);
+                setElementText('totalDoctors', totalDoctors);
+                setElementText('totalTreatments', totalTreatments);
+                setElementText('pendingTestimonials', pendingReviews);
+                setElementText('totalSpecialties', totalSpecialtiesCount);
+                setElementHTML('approvedTestimonials', `<i class="fas fa-check-circle mr-1"></i>${approvedReviews} Approved`);
+
+                // Calculate popular treatments
+                const treatmentsList = treatments?.data?.treatments || [];
+                const popularCount = treatmentsList.filter(t => t.isPopular).length;
+                setElementHTML('popularTreatments', `<i class="fas fa-fire mr-1"></i>${popularCount} Popular`);
+
+                // Calculate average rating and total beds
+                const hospitalsList = hospitals?.data?.hospitals || [];
+                let totalRating = 0;
+                let ratingCount = 0;
+                let totalBeds = 0;
+
+                hospitalsList.forEach(h => {
+                    if (h.rating) {
+                        totalRating += parseFloat(h.rating) || 0;
+                        ratingCount++;
+                    }
+                    if (h.bedCapacity) {
+                        totalBeds += parseInt(h.bedCapacity) || 0;
+                    }
+                });
+
+                const avgRating = ratingCount > 0 ? (totalRating / ratingCount).toFixed(1) : '0.0';
+                setElementText('avgRating', avgRating);
+                setElementText('totalBeds', totalBeds.toLocaleString());
+
+                // Update star display
+                try { updateRatingStars(parseFloat(avgRating) || 0); } catch (e) { console.error('Star update error:', e); }
+
+                // Load charts - with error handling
+                const doctorsList = doctors?.data?.doctors || [];
+                const specialtiesList = specialties?.data?.specialties || [];
+
+                try { loadDoctorsBySpecialtyChart(doctorsList, specialtiesList); } catch (e) { console.error('Doctors chart error:', e); }
+                try { loadHospitalsByCityChart(hospitalsList); } catch (e) { console.error('Hospitals chart error:', e); }
+
+                // Load activity log
+                const allTestimonials = [...(testimonials?.data?.testimonials || []), ...(approvedTestimonials?.data?.testimonials || [])];
+                try { loadActivityLog(hospitalsList, doctorsList, treatmentsList, allTestimonials); } catch (e) { console.error('Activity log error:', e); }
+
+                // Load top hospitals
+                try { loadTopHospitals(hospitalsList); } catch (e) { console.error('Top hospitals error:', e); }
+
+                // Run data health check
+                try { runDataHealthCheck(hospitalsList, doctorsList, treatmentsList, allTestimonials); } catch (e) { console.error('Health check error:', e); }
+
             } catch (error) {
                 console.error('Error loading overview:', error);
+            }
+        }
+
+        function updateRatingStars(rating) {
+            const starsContainer = document.getElementById('ratingStars');
+            if (!starsContainer) return;
+
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(rating)) {
+                    starsHtml += '<i class="fas fa-star text-yellow-300 mr-1"></i>';
+                } else if (i - 0.5 <= rating) {
+                    starsHtml += '<i class="fas fa-star-half-alt text-yellow-300 mr-1"></i>';
+                } else {
+                    starsHtml += '<i class="far fa-star text-yellow-300 mr-1"></i>';
+                }
+            }
+            starsContainer.innerHTML = starsHtml;
+        }
+
+        function loadDoctorsBySpecialtyChart(doctors, specialties) {
+            const canvas = document.getElementById('doctorsBySpecialtyChart');
+            const emptyMsg = document.getElementById('doctorsChartEmpty');
+
+            if (!canvas) {
+                console.warn('Doctors chart canvas not found');
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            // Handle empty data - show message, hide canvas
+            if (!doctors || !Array.isArray(doctors) || doctors.length === 0) {
+                canvas.style.display = 'none';
+                if (emptyMsg) emptyMsg.style.display = 'flex';
+                return;
+            }
+
+            // Show canvas, hide message
+            canvas.style.display = 'block';
+            if (emptyMsg) emptyMsg.style.display = 'none';
+
+            // Count doctors by specialty
+            const specialtyCounts = {};
+            doctors.forEach(d => {
+                const specName = d.specialty?.name || d.specialization || 'Unassigned';
+                specialtyCounts[specName] = (specialtyCounts[specName] || 0) + 1;
+            });
+
+            // Sort by count and take top 6
+            const sortedSpecs = Object.entries(specialtyCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+
+            const labels = sortedSpecs.map(s => s[0]);
+            const data = sortedSpecs.map(s => s[1]);
+
+            const colors = ['#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+
+            if (doctorsBySpecialtyChart) {
+                doctorsBySpecialtyChart.destroy();
+            }
+
+            doctorsBySpecialtyChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 10,
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadHospitalsByCityChart(hospitals) {
+            const canvas = document.getElementById('hospitalsByCityChart');
+            const emptyMsg = document.getElementById('hospitalsChartEmpty');
+
+            if (!canvas) {
+                console.warn('Hospitals chart canvas not found');
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            // Handle empty data - show message, hide canvas
+            if (!hospitals || hospitals.length === 0) {
+                canvas.style.display = 'none';
+                if (emptyMsg) emptyMsg.style.display = 'flex';
+                return;
+            }
+
+            // Show canvas, hide message
+            canvas.style.display = 'block';
+            if (emptyMsg) emptyMsg.style.display = 'none';
+
+            // Count hospitals by city
+            const cityCounts = {};
+            hospitals.forEach(h => {
+                const city = h.city || 'Unknown';
+                cityCounts[city] = (cityCounts[city] || 0) + 1;
+            });
+
+            // Sort by count and take top 8
+            const sortedCities = Object.entries(cityCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8);
+
+            const labels = sortedCities.map(s => s[0]);
+            const data = sortedCities.map(s => s[1]);
+
+            if (hospitalsByCityChart) {
+                hospitalsByCityChart.destroy();
+            }
+
+            hospitalsByCityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Hospitals',
+                        data: data,
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        borderColor: 'rgba(99, 102, 241, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barThickness: 30
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 10 },
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadActivityLog(hospitals, doctors, treatments, testimonials) {
+            const activityDiv = document.getElementById('activityLog');
+            if (!activityDiv) return;
+
+            // Create activity items from recent data
+            const activities = [];
+
+            // Add recent hospitals - safely handle arrays
+            (hospitals || []).slice(0, 3).forEach(h => {
+                activities.push({
+                    type: 'hospital',
+                    icon: 'fa-hospital',
+                    color: 'bg-indigo-100 text-indigo-600',
+                    title: `Hospital: ${h.name}`,
+                    subtitle: `${h.city}, ${h.state}`,
+                    time: h.createdAt || new Date().toISOString()
+                });
+            });
+
+            // Add recent doctors - safely handle arrays
+            (doctors || []).slice(0, 3).forEach(d => {
+                activities.push({
+                    type: 'doctor',
+                    icon: 'fa-user-md',
+                    color: 'bg-green-100 text-green-600',
+                    title: `Dr. ${d.name || 'Unknown'}`,
+                    subtitle: d.specialty?.name || d.specialization || 'General',
+                    time: d.createdAt || new Date().toISOString()
+                });
+            });
+
+            // Add recent treatments - safely handle arrays
+            (treatments || []).slice(0, 2).forEach(t => {
+                activities.push({
+                    type: 'treatment',
+                    icon: 'fa-procedures',
+                    color: 'bg-yellow-100 text-yellow-600',
+                    title: `Treatment: ${t.name || 'Unknown'}`,
+                    subtitle: t.hospital?.name || 'General',
+                    time: t.createdAt || new Date().toISOString()
+                });
+            });
+
+            // Add recent testimonials - safely handle arrays
+            (testimonials || []).slice(0, 2).forEach(t => {
+                activities.push({
+                    type: 'testimonial',
+                    icon: 'fa-comment',
+                    color: t.isApproved ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600',
+                    title: `Review by ${t.patientName || 'Anonymous'}`,
+                    subtitle: t.isApproved ? 'Approved' : 'Pending approval',
+                    time: t.createdAt || t.date || new Date().toISOString()
+                });
+            });
+
+            // Sort by time (newest first)
+            activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+            if (activities.length === 0) {
+                activityDiv.innerHTML = '<p class="text-center text-gray-400 py-4">No recent activity</p>';
+                return;
+            }
+
+            activityDiv.innerHTML = activities.slice(0, 10).map(act => `
+                <div class="flex items-start space-x-3 py-3 border-b border-gray-100 last:border-0">
+                    <div class="${act.color} rounded-full p-2">
+                        <i class="fas ${act.icon} text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate">${act.title}</p>
+                        <p class="text-xs text-gray-500">${act.subtitle}</p>
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        ${formatTimeAgo(act.time)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return date.toLocaleDateString();
+        }
+
+        function refreshActivityLog() {
+            const activityLogEl = document.getElementById('activityLog');
+            if (activityLogEl) {
+                activityLogEl.innerHTML = '<div class="text-center py-4 text-gray-400"><div class="loading mx-auto"></div></div>';
+            }
+            loadOverviewData();
+        }
+
+        function loadTopHospitals(hospitals) {
+            const topHospitalsDiv = document.getElementById('topHospitalsList');
+            if (!topHospitalsDiv) return;
+
+            // Safely handle null/undefined hospitals
+            if (!hospitals || !Array.isArray(hospitals) || hospitals.length === 0) {
+                topHospitalsDiv.innerHTML = '<p class="text-center text-gray-400 text-sm">No hospitals found</p>';
+                return;
+            }
+
+            // Sort by rating and take top 5
+            const topHospitals = [...hospitals]
+                .filter(h => h.rating)
+                .sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0))
+                .slice(0, 5);
+
+            if (topHospitals.length === 0) {
+                topHospitalsDiv.innerHTML = '<p class="text-center text-gray-400 text-sm">No rated hospitals</p>';
+                return;
+            }
+
+            topHospitalsDiv.innerHTML = topHospitals.map((h, idx) => `
+                <div class="flex items-center space-x-2 py-1">
+                    <span class="w-5 h-5 rounded-full ${idx === 0 ? 'bg-yellow-400' : idx === 1 ? 'bg-gray-300' : idx === 2 ? 'bg-orange-400' : 'bg-gray-200'} flex items-center justify-center text-xs font-bold text-white">${idx + 1}</span>
+                    <span class="text-sm text-gray-700 flex-1 truncate">${h.name || 'Unknown'}</span>
+                    <span class="text-xs text-yellow-600 font-medium"><i class="fas fa-star mr-1"></i>${h.rating}</span>
+                </div>
+            `).join('');
+        }
+
+        function runDataHealthCheck(hospitals, doctors, treatments, testimonials) {
+            // Safety helper for setting element text
+            const setHealth = (id, text) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = text;
+            };
+
+            // Safely convert arrays
+            const hospitalsArr = Array.isArray(hospitals) ? hospitals : [];
+            const doctorsArr = Array.isArray(doctors) ? doctors : [];
+            const treatmentsArr = Array.isArray(treatments) ? treatments : [];
+            const testimonialsArr = Array.isArray(testimonials) ? testimonials : [];
+
+            // Hospitals with at least one doctor
+            const hospitalIds = new Set(doctorsArr.map(d => d.hospitalId).filter(id => id));
+            const hospitalsWithDoctors = hospitalsArr.filter(h => hospitalIds.has(h.id)).length;
+            setHealth('healthHospitalsWithDoctors', hospitalsArr.length > 0 ? `${hospitalsWithDoctors}/${hospitalsArr.length}` : '-');
+
+            // Doctors with images
+            const doctorsWithImages = doctorsArr.filter(d => d.image).length;
+            setHealth('healthDoctorsWithImages', doctorsArr.length > 0 ? `${doctorsWithImages}/${doctorsArr.length}` : '-');
+
+            // Treatments with cost
+            const treatmentsWithCost = treatmentsArr.filter(t => t.cost).length;
+            setHealth('healthTreatmentsWithCost', treatmentsArr.length > 0 ? `${treatmentsWithCost}/${treatmentsArr.length}` : '-');
+
+            // Complete testimonials (with story, rating, and hospital)
+            const completeTestimonials = testimonialsArr.filter(t => t.story && t.rating && t.hospitalId).length;
+            setHealth('healthTestimonialsComplete', testimonialsArr.length > 0 ? `${completeTestimonials}/${testimonialsArr.length}` : '-');
+        }
+
+        // Reload data and run health check when button is clicked
+        async function reloadDataHealthCheck() {
+            // Show loading state
+            const healthIds = ['healthHospitalsWithDoctors', 'healthDoctorsWithImages', 'healthTreatmentsWithCost', 'healthTestimonialsComplete'];
+            healthIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = '<i class="fas fa-spinner fa-spin text-gray-400"></i>';
+            });
+
+            try {
+                const headers = { 'Authorization': `Bearer ${authToken}` };
+                const [hospitals, doctors, treatments, testimonials, approvedTestimonials] = await Promise.all([
+                    fetch(`${API_BASE_URL}/hospitals?limit=100`, { headers }).then(r => r.json()).catch(() => ({ data: { hospitals: [] } })),
+                    fetch(`${API_BASE_URL}/doctors?limit=200`, { headers }).then(r => r.json()).catch(() => ({ data: { doctors: [] } })),
+                    fetch(`${API_BASE_URL}/treatments?limit=200`, { headers }).then(r => r.json()).catch(() => ({ data: { treatments: [] } })),
+                    fetch(`${API_BASE_URL}/testimonials?isApproved=false`, { headers }).then(r => r.json()).catch(() => ({ data: { testimonials: [] } })),
+                    fetch(`${API_BASE_URL}/testimonials?isApproved=true&limit=100`, { headers }).then(r => r.json()).catch(() => ({ data: { testimonials: [] } }))
+                ]);
+
+                const allTestimonials = [...(testimonials?.data?.testimonials || []), ...(approvedTestimonials?.data?.testimonials || [])];
+
+                runDataHealthCheck(
+                    hospitals?.data?.hospitals || [],
+                    doctors?.data?.doctors || [],
+                    treatments?.data?.treatments || [],
+                    allTestimonials
+                );
+            } catch (error) {
+                console.error('Error reloading health check:', error);
+                healthIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = 'Error';
+                });
             }
         }
 
@@ -1129,7 +1762,7 @@
             if (!select) return;
             select.innerHTML = '<option value="">Loading...</option>';
             try {
-                const response = await fetch(`${API_BASE_URL}/doctors`, {
+                const response = await fetch(`${API_BASE_URL}/doctors?limit=500`, {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 });
                 const data = await response.json();
@@ -1146,7 +1779,7 @@
             const listDiv = document.getElementById('doctorsList');
             listDiv.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto mb-4"></div><p class="text-gray-500">Loading doctors...</p></div>';
             try {
-                const response = await fetch(`${API_BASE_URL}/doctors`, {
+                const response = await fetch(`${API_BASE_URL}/doctors?limit=500`, {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 });
                 const data = await response.json();
@@ -1619,36 +2252,82 @@
             const listDiv = document.getElementById('testimonialsList');
             listDiv.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto mb-4"></div><p class="text-gray-500">Loading testimonials...</p></div>';
             try {
-                const response = await fetch(`${API_BASE_URL}/testimonials`, {
+                const response = await fetch(`${API_BASE_URL}/testimonials?limit=500`, {
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 });
                 const data = await response.json();
                 if (data.success && data.data.testimonials.length > 0) {
-                    listDiv.innerHTML = data.data.testimonials.map(t => `
-                    <div class="border-b border-gray-200 py-4 flex justify-between items-start">
+                    listDiv.innerHTML = `
+                        <div class="mb-4 text-sm text-gray-600">
+                            <span class="font-semibold">${data.data.testimonials.length}</span> testimonials found
+                        </div>
+                    ` + data.data.testimonials.map(t => {
+                        // Escape special characters in story for safe use in onclick
+                        const escapedStory = (t.story || '').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, ' ');
+                        const escapedName = (t.patientName || '').replace(/'/g, "\\'");
+                        const escapedTreatment = (t.treatment || '').replace(/'/g, "\\'");
+                        const escapedCountry = (t.country || '').replace(/'/g, "\\'");
+
+                        return `
+                        <div class="border-b border-gray-200 py-4 flex justify-between items-start">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-1">
                                     <h3 class="font-semibold">${t.patientName}</h3>
+                                    <span class="text-xs text-gray-500">${t.age ? t.age + ' yrs' : ''} ${t.country ? '• ' + t.country : ''}</span>
                                     <span class="px-2 py-0.5 rounded-full text-xs ${t.isApproved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${t.isApproved ? 'Approved' : 'Pending'}</span>
                                 </div>
-                                <p class="text-sm text-gray-600 italic">"${t.story}"</p>
+                                <p class="text-sm text-gray-700 mb-1"><strong>Treatment:</strong> ${t.treatment || 'N/A'}</p>
+                                <p class="text-sm text-gray-600 italic">"${(t.story || '').substring(0, 150)}${(t.story || '').length > 150 ? '...' : ''}"</p>
                                 <div class="text-xs text-gray-500 mt-1">
                                     ${t.hospital ? `<i class="fas fa-hospital mr-1"></i>${t.hospital.name}` : ''}
                                     ${t.doctor ? `<span class="ml-2"><i class="fas fa-user-md mr-1"></i>Dr. ${t.doctor.name}</span>` : ''}
+                                    ${t.rating ? `<span class="ml-2"><i class="fas fa-star text-yellow-500 mr-1"></i>${t.rating}</span>` : ''}
+                                    ${t.date ? `<span class="ml-2"><i class="fas fa-calendar mr-1"></i>${new Date(t.date).toLocaleDateString()}</span>` : ''}
                                 </div>
                             </div>
                             <div class="flex gap-2 ml-4">
                                 ${!t.isApproved ? `<button onclick="approveTestimonial('${t.id}')" class="text-green-600 hover:bg-green-50 px-2 py-1 rounded" title="Approve"><i class="fas fa-check"></i></button>` : ''}
-                                <button onclick="openTestimonialModal('${t.id}', '${t.patientName}', '${t.age || ''}', '${t.country || ''}', '${t.treatment || ''}', '${t.rating || ''}', '${t.story}', '${t.hospitalId}', '${t.doctorId || ''}', '${t.date ? t.date.split('T')[0] : ''}', '${t.image || ''}')" class="text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button onclick="editTestimonial('${t.id}')" class="text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded" title="Edit"><i class="fas fa-edit"></i></button>
                                 <button onclick="deleteTestimonial('${t.id}')" class="text-red-600 hover:bg-red-50 px-2 py-1 rounded" title="Delete"><i class="fas fa-trash"></i></button>
                             </div>
                         </div>
-                        `).join('');
+                        `;
+                    }).join('');
                 } else {
                     listDiv.innerHTML = '<p class="text-center text-gray-500 py-4">No testimonials found.</p>';
                 }
             } catch (e) {
+                console.error('Error loading testimonials:', e);
                 listDiv.innerHTML = '<p class="text-center text-red-500 py-4">Error loading testimonials.</p>';
+            }
+        }
+
+        // Fetch testimonial by ID for editing
+        async function editTestimonial(id) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/testimonials/${id}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const t = data.data;
+                    openTestimonialModal(
+                        t.id,
+                        t.patientName || '',
+                        t.age || '',
+                        t.country || '',
+                        t.treatment || '',
+                        t.rating || '',
+                        t.story || '',
+                        t.hospitalId || '',
+                        t.doctorId || '',
+                        t.date ? t.date.split('T')[0] : '',
+                        t.image || ''
+                    );
+                }
+            } catch (error) {
+                console.error('Error fetching testimonial:', error);
+                alert('Error loading testimonial data');
             }
         }
 
